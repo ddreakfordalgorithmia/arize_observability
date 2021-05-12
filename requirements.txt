@@ -1,2 +1,9 @@
 algorithmia>=1.0.0,<2.0
-joblib
+arize
+joblib==1.0.1
+numpy>=1.0
+pandas<2.0,>=0.25.3
+scikit-learn<1.0
+shap==0.39.0
+jupyter
+matplotlib

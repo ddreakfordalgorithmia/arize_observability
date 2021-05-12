@@ -1,5 +1,5 @@
 {
-    "model_filepath": "./model.pkl",
+    "model_filepath": "./Algorithmia_Tutorial_Model.pkl",
     "model_origin_commit_SHA": "COMMIT SHA OF THE WORKFLOW TRIGGER EVENT",
     "model_origin_commit_msg": "COMMIT MSG OF THE WORKFLOW TRIGGER EVENT",
     "model_origin_repo": "CURRENT GIT REPO OF THIS PROJECT",
