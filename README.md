@@ -2,6 +2,6 @@
 
 ...
 
-## Template Repo Contents
-![](images/contents.png)
+## Repo Contents
+...
 
