@@ -114,14 +114,14 @@ def apply(input):
     res = pd.DataFrame(y_pred)
     res.index = ids
     res.index.rename("pred_id", inplace=True)
-    resObj = res.to_json()
-    # resObj["predictions"] = res.to_json()
-    # resObj["model_metadata"] = {
-    #     "model_file": manifest["model_filepath"],
-    #     "origin_repo": manifest["model_origin_repo"],
-    #     "origin_commit_SHA": manifest["model_origin_commit_SHA"],
-    #     "origin_commit_msg": manifest["model_origin_commit_msg"]
-    # }
+    resObj = {}
+    resObj["predictions"] = res.to_dict()
+    resObj["model_metadata"] = {
+        "model_file": manifest["model_filepath"],
+        "origin_repo": manifest["model_origin_repo"],
+        "origin_commit_SHA": manifest["model_origin_commit_SHA"],
+        "origin_commit_msg": manifest["model_origin_commit_msg"]
+    }
     return resObj
 
 # Facilitate local testing
@@ -135,8 +135,8 @@ if __name__ == "__main__":
     print ('Test data loaded..')
 
     algo_result = apply(X_test.to_json())
+    # print(json.dumps(algo_result, indent=2))
     print(f"\nPredictions:")
-    print(json.dumps(algo_result, indent=2))
-    # print(json.dumps(algo_result['predictions'], indent=2))
-    # print(f"\n\nModel metadata:")
-    # print(json.dumps(algo_result['model_metadata'], indent=2))
+    print(json.dumps(algo_result['predictions'], indent=2))
+    print(f"\n\nModel metadata:")
+    print(json.dumps(algo_result['model_metadata'], indent=2))
