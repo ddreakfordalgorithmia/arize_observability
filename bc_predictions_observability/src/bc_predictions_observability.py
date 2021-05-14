@@ -75,8 +75,8 @@ manifest = load_model_manifest()
 model = load_model(manifest)
 
 # Setting up Arize client
-arize_org_key = os.getenv('ARIZE_ORG_KEY')
-arize_api_key = os.getenv('ARIZE_API_KEY')
+arize_org_key = 'fMXkCnzL'
+arize_api_key = 'FDOJvy1Fu4Nk/HDDJrrG'
 arize_client = ArizeClient(organization_key=arize_org_key, api_key=arize_api_key)
 
 # API calls will begin at the apply() method, with the request body passed as 'input'
