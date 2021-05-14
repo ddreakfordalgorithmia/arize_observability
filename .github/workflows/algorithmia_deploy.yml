@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - main
+    paths-ignore:
+      - ‘**/README.md’
+      - ‘**/model_manifest.json’
 
 jobs:
   algorithmia-deploy:
@@ -18,9 +21,11 @@ jobs:
         env:
           HEAD_COMMIT_MSG: ${{ github.event.head_commit.message }}
         with:
+          algorithmia_api: ${{ secrets.ALGORITHMIA_API }}
           algorithmia_api_key: ${{ secrets.ALGORITHMIA_API_KEY }}
           algorithmia_username: ${{ secrets.ALGORITHMIA_USERNAME }}
           algorithmia_email: ${{ secrets.ALGORITHMIA_EMAIL }}
+          algorithmia_algoname:  sentiment_analysis_gha
           algorithmia_password: ${{ secrets.ALGORITHMIA_PASSWORD }}
-          algorithmia_algoname:  YOUR_ALGORITHM_NAME
+          git_host: git.algosales.productionize.ai
         
