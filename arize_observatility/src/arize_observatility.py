@@ -11,13 +11,15 @@ import uuid
 import sklearn
 import joblib
 import pickle
-from arize.api import Client
+from arize.api import Client as ArizeClient
 from arize.types import ModelTypes
 import os
 
+import numpy as np
+from sklearn import datasets
+from sklearn.model_selection import train_test_split
 
-client = Algorithmia.client()
-
+algoClient = Algorithmia.client()
 
 def load_model_manifest(rel_path="model_manifest.json"):
     """Loads the model manifest file as a dict.
@@ -46,7 +48,7 @@ def load_model(manifest):
     if __name__ == "__main__":
         model_file = model_path
     else:
-        model_file = client.file(model_path).getFile().name
+        model_file = lient.file(model_path).getFile().name
         assert_model_md5(model_file)
     model_obj = joblib.load(model_file)
     return model_obj
@@ -68,19 +70,68 @@ def assert_model_md5(model_file):
     assert manifest["model_md5_hash"] == md5_hash
     print("Model file's runtime MD5 hash equals to the upload time hash, great!")
 
-
+# Load the model manifest and model file
 manifest = load_model_manifest()
 model = load_model(manifest)
 
+# Setting up Arize client
+arize_org_key = os.getenv('ARIZE_ORG_KEY')
+arize_api_key = os.getenv('ARIZE_API_KEY')
+arize_client = ArizeClient(organization_key=arize_org_key, api_key=arize_api_key)
 
 # API calls will begin at the apply() method, with the request body passed as 'input'
 # For more details, see algorithmia.com/developers/algorithm-development/languages
 def apply(input):
-    # You can access the model object from this scope
-    return f"Echoing back input: {input}"
 
+    # Generate new predictions in production
+    X_data = pd.read_json(input)
+    y_pred = model.predict(X_data)
 
+    shap_values = shap.Explainer(model, X_data).shap_values(X_data)
+    shap_values = pd.DataFrame(shap_values, columns=X_data.columns)
+    
+    ids = pd.Series([str(uuid.uuid4()) for _ in range(len(X_data))])
+
+    # We log the data to Arize after making prediction
+    log_responses = arize_client.log_bulk_predictions(
+        model_id="Algorithmia_Tutorial_Model", 
+        model_version="1.0",
+        model_type=ModelTypes.BINARY,
+        features=X_data,
+        prediction_ids=ids,
+        prediction_labels=pd.Series(y_pred))
+    
+    # We log the data to Arize after making prediction
+    shap_responses = arize_client.log_bulk_shap_values(
+        model_id=f"Algorithmia_Tutorial_{manifest['model_md5_hash']}",
+        prediction_ids=ids, # Again, pass in the same IDs to match the predictions & actuals. 
+        shap_values=shap_values
+    )
+
+    # return prediction for and the prediction id for each
+    res = pd.DataFrame(y_pred)
+    res.index = ids
+    res.index.rename("pred_id", inplace=True)
+    resObj = {}
+    resObj["predictions"] = res.to_dict()
+    resObj["model_metadata"] = {
+        "model_file": manifest["model_filepath"],
+        "origin_repo": manifest["model_origin_repo"],
+        "origin_commit_SHA": manifest["model_origin_commit_SHA"],
+        "origin_commit_msg": manifest["model_origin_commit_msg"]
+    }
+    return resObj
+
+# Facilitate local testing
 if __name__ == "__main__":
-    # Now the apply() function will be able to access the locally loaded model
-    algo_result = apply("Test input")
-    print(algo_result)
+    
+    # 1 Load data and split data
+    data = datasets.load_breast_cancer()
+    X, y = datasets.load_breast_cancer(return_X_y=True)
+    X, y = pd.DataFrame(X.astype(np.float32), columns=data['feature_names']), pd.Series(y)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=42)
+    print ('Test data loaded..')
+
+    algo_result = apply(X_test.to_json())
+    print(f"\nPredictions: {algo_result['predictions']}")
+    print(f"\nModel metadata: {algo_result['model_metadata']}")
