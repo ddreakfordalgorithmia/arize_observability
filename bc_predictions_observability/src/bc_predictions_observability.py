@@ -48,7 +48,7 @@ def load_model(manifest):
     if __name__ == "__main__":
         model_file = model_path
     else:
-        model_file = lient.file(model_path).getFile().name
+        model_file = algoClient.file(model_path).getFile().name
         assert_model_md5(model_file)
     model_obj = joblib.load(model_file)
     return model_obj
