@@ -115,7 +115,7 @@ def apply(input):
     res.index = ids
     res.index.rename("pred_id", inplace=True)
     resObj = {}
-    resObj["predictions"] = res.to_dict()
+    resObj["predictions"] = res.to_json()
     resObj["model_metadata"] = {
         "model_file": manifest["model_filepath"],
         "origin_repo": manifest["model_origin_repo"],
@@ -135,5 +135,7 @@ if __name__ == "__main__":
     print ('Test data loaded..')
 
     algo_result = apply(X_test.to_json())
-    print(f"\nPredictions: {algo_result['predictions']}")
-    print(f"\nModel metadata: {algo_result['model_metadata']}")
+    print(f"\nPredictions:")
+    print(json.dumps(algo_result['predictions'], indent=2))
+    print(f"\n\nModel metadata:")
+    print(json.dumps(algo_result['model_metadata'], indent=2))
