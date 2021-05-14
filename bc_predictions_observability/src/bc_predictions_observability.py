@@ -92,7 +92,7 @@ def apply(input):
     
     ids = pd.Series([str(uuid.uuid4()) for _ in range(len(X_data))])
 
-    # We log the data to Arize after making prediction
+    # Log the data to Arize after making prediction
     log_responses = arize_client.log_bulk_predictions(
         model_id="Algorithmia_Tutorial_Model", 
         model_version="1.0",
@@ -101,14 +101,16 @@ def apply(input):
         prediction_ids=ids,
         prediction_labels=pd.Series(y_pred))
     
-    # We log the data to Arize after making prediction
+    # Log the data to Arize after making prediction
     shap_responses = arize_client.log_bulk_shap_values(
         model_id=f"Algorithmia_Tutorial_{manifest['model_md5_hash']}",
         prediction_ids=ids, # Again, pass in the same IDs to match the predictions & actuals. 
         shap_values=shap_values
     )
 
-    # return prediction for and the prediction id for each
+    # Return to the caller a json object containing:
+    # - prediction id and prediction value for each
+    # - metadata associated with the model used to make the prediction
     res = pd.DataFrame(y_pred)
     res.index = ids
     res.index.rename("pred_id", inplace=True)
