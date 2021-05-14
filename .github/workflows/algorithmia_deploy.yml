@@ -28,4 +28,4 @@ jobs:
           algorithmia_algoname:  bc_predictions_observability
           algorithmia_password: ${{ secrets.ALGORITHMIA_PASSWORD }}
           git_host: git.algosales.productionize.ai
-        
+          model_path: Algorithmia_Tutorial_Model.pkl
