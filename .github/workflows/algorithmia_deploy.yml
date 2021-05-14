@@ -25,7 +25,7 @@ jobs:
           algorithmia_api_key: ${{ secrets.ALGORITHMIA_API_KEY }}
           algorithmia_username: ${{ secrets.ALGORITHMIA_USERNAME }}
           algorithmia_email: ${{ secrets.ALGORITHMIA_EMAIL }}
-          algorithmia_algoname:  sentiment_analysis_gha
+          algorithmia_algoname:  bc_predictions_observability
           algorithmia_password: ${{ secrets.ALGORITHMIA_PASSWORD }}
           git_host: git.algosales.productionize.ai
         
