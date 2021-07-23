@@ -21,7 +21,7 @@ To run the bc_predictions_observability algorithm locally, Python 3.8 is require
     `juypter notebook`
 
 6. Execute Step 1 and Step 2 of `Arize_Tutorial_With_Algorithmia.ipynb` to download the sample data, train and serialize our model file.  
-    **NOTE:** In this repo, the algorithm files were created separately and live under `bc_predictins_observability/...`
+    **NOTE:** In this repo, the algorithm files were created separately and live under `bc_predictions_observability/...`
 
 7. Run the algorithm script.  
     - The script contains the `if __name__ == "__main__":` conditional to facilitate local testing.
