@@ -32,7 +32,7 @@ To run the bc_predictions_observability algorithm locally, Python 3.8 is require
 
 9. Clone the algorithm repo.
 
-10. Copy the files under `bc_predictins_observability/...` into the algorithm repo.
+10. Copy the files under `bc_predictions_observability/...` into the algorithm repo.
 
 ## Repo Contents
 - 
