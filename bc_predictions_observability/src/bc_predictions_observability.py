@@ -94,7 +94,7 @@ def apply(input):
 
     # Log the data to Arize after making prediction
     log_responses = arize_client.log_bulk_predictions(
-        model_id="Algorithmia_Tutorial_Model", 
+        model_id=f"Algorithmia_Tutorial_{manifest['model_md5_hash']}",
         model_version="1.0",
         model_type=ModelTypes.BINARY,
         features=X_data,
